@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.NaturalId;
 
 import javax.xml.crypto.Data;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Article {
@@ -16,6 +18,11 @@ public class Article {
     @Column(columnDefinition = "Text")
     private String articleBody;
     private Date created;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name="article_id")
+//    @JoinTable(name="article_comments", joinColumns = @JoinColumn(name="article_id"))
+    private List<Comment> commentList = new ArrayList<>();
 
 
     @NaturalId

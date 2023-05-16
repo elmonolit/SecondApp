@@ -1,8 +1,12 @@
 package com.example.SecondApp.controllers;
 
 import com.example.SecondApp.models.Article;
+import com.example.SecondApp.models.Comment;
 import com.example.SecondApp.repo.ArticlesRepository;
+import com.example.SecondApp.repo.CommentRepository;
 import com.example.SecondApp.utils.SlugGenerator;
+import org.apache.coyote.Response;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +24,8 @@ public class ArticleController {
 
     @Autowired
     ArticlesRepository articlesRepository;
+    @Autowired
+    CommentRepository commentRepository;
 
     @GetMapping("")
     public ResponseEntity articles(){
@@ -44,10 +50,38 @@ public class ArticleController {
         return ResponseEntity.ok(article);
     }
 
-    @GetMapping("/{slug}")
-    public ResponseEntity showArticle(@PathVariable("slug") String slug){
-        Optional<Article> article = articlesRepository.findBySlug(slug);
-//        articlesRepository.findBySlug(slug);
+//    @GetMapping("/{slug}")
+//    public ResponseEntity showArticle(@PathVariable("slug") String slug){
+//        Optional<Article> article = articlesRepository.findBySlug(slug);
+////        articlesRepository.findBySlug(slug);
+//        return ResponseEntity.ok(article);
+//    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity showArticle(@PathVariable("id") String id){
+//        JSONObject article = new JSONObject(articlesRepository.findById(Integer.parseInt(id)));
+//        JSONArray commentList = new JSONArray(commentRepository.findAllByArticleId(Integer.parseInt(id)));
+//        article.put("comments", commentList);
+////        System.out.println(article);
+////        System.out.println(commentList);
+//////        List<Comment> comments = article.get();
+////        System.out.println(comments);
+////        JSONObject result =
+        Optional<Article> article = articlesRepository.findById(Integer.parseInt(id));
         return ResponseEntity.ok(article);
+    }
+
+    @PostMapping("/{id}/comment")
+    public ResponseEntity addCommment(@PathVariable("id") String id, @RequestBody() String comment){
+        JSONObject jsonComment = new JSONObject(comment);
+        String author = jsonComment.getString("author");
+        String commentBody = jsonComment.getString("comment");
+        Article article = articlesRepository.findById(Integer.parseInt(id)).get();
+        Comment commentEntity = new Comment();
+        commentEntity.setArticle(article);
+        commentEntity.setAuthor(author);
+        commentEntity.setCommentBody(commentBody);
+        commentRepository.save(commentEntity);
+        return ResponseEntity.ok(commentEntity);
     }
 }
