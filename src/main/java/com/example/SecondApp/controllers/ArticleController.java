@@ -6,6 +6,7 @@ import com.example.SecondApp.repo.ArticlesRepository;
 import com.example.SecondApp.repo.CommentRepository;
 import com.example.SecondApp.utils.SlugGenerator;
 import org.apache.coyote.Response;
+import org.hibernate.Hibernate;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,8 +68,10 @@ public class ArticleController {
 //////        List<Comment> comments = article.get();
 ////        System.out.println(comments);
 ////        JSONObject result =
+//        Optional<Article> article = articlesRepository.findById(Integer.parseInt(id));
         Optional<Article> article = articlesRepository.findById(Integer.parseInt(id));
-        return ResponseEntity.ok(article);
+        System.out.println(article.get().getCommentList());
+        return ResponseEntity.ok(article.get());
     }
 
     @PostMapping("/{id}/comment")

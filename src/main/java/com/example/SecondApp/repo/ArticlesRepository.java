@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface ArticlesRepository extends JpaRepository<Article,Integer> {
     Optional<Article> findBySlug(String slug);
+
+//    Optional<Article> findByIdWithComments(Integer id);
 }

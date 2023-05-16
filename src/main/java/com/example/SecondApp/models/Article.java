@@ -1,12 +1,11 @@
 package com.example.SecondApp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.NaturalId;
 
 import javax.xml.crypto.Data;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 public class Article {
@@ -19,11 +18,22 @@ public class Article {
     private String articleBody;
     private Date created;
 
+//    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name="article_id")
 //    @JoinTable(name="article_comments", joinColumns = @JoinColumn(name="article_id"))
     private List<Comment> commentList = new ArrayList<>();
 
+    public List<Map<String,String>> getCommentList() {
+        List<Map<String,String>> cl = new ArrayList<>();
+        for (Comment c: commentList) {
+            Map<String, String> pair = new HashMap<>();
+            pair.put("author", c.getAuthor());
+            pair.put("commentBody", c.getCommentBody());
+            cl.add(pair);
+        }
+        return cl;
+    }
 
     @NaturalId
     private String slug;
